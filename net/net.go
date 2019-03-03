@@ -10,6 +10,7 @@ import (
 type Network struct{
 	layers[] mu.Matrix
 	bias[] mu.Matrix
+	lr float64
 }
 
 // Apply bias to a weighted sum
@@ -30,14 +31,15 @@ func addBias(weights mu.Matrix, bias mu.Matrix) mu.Matrix{
 }
 
 // Forward propogate through the Network 
-func (net Network) forwardProp(input mu.Matrix) (mu.Matrix, mu.Matrix, mu.Matrix){
-	weightedInput, activation := make([]mu.Matrix, len(net.layers))
+func (net Network) forwardProp(input mu.Matrix) (mu.Matrix, []mu.Matrix, []mu.Matrix){
+	weightedInput := make([]mu.Matrix, 0)
+	activation := make([]mu.Matrix, 0)
 	for i, layer := range net.layers{
 		input = input.Dot(layer)
-		weightedInput = append(weightedInput, mu.CopyMatrix(input))
 		input = addBias(input, net.bias[i])
-		activation = append(activation, mu.CopyMatrix(input))
+		weightedInput = append(weightedInput, mu.CopyMatrix(input))
 		input.ApplyConst(relu)
+		activation = append(activation, mu.CopyMatrix(input))
 	}
 	return input, weightedInput, activation
 }
@@ -74,7 +76,7 @@ func divRelu(num float64) float64{
 
 
 // Create a NN from layerAmounts - including input and output amounts
-func createNetwork(layerAmounts ...int) Network{
+func createNetwork(lr float64, layerAmounts ...int) Network{
 	layers := make([]mu.Matrix, 0)
 	for i, val := range layerAmounts{
 		if i+1 == len(layerAmounts){
@@ -90,16 +92,58 @@ func createNetwork(layerAmounts ...int) Network{
 		}
 		biases = append(biases, mu.GenerateMatrixRand(1,layerAmounts[i+1]))
 	}
-	return Network{layers: layers, bias: biases}
+	return Network{layers: layers, bias: biases, lr: lr}
 }
+
 
 // Backpropagation
-func (net Network) backProp(output mu.Matrix, goal mu.Matrix){
-	for i := len(net.layers)-1; i > 0; i--{
-		
+func (net Network) backProp(weightedInputs []mu.Matrix, activations []mu.Matrix, inputs mu.Matrix, goal mu.Matrix){
+	numOfLayers := len(net.layers)
+	
+	// Eo = (O-y)dot(sigmoid'(weightedInput))
+	weightedInputs[numOfLayers-1].ApplyConst(divRelu)
+	err := mu.ApplyFunc(mu.ApplyFunc(activations[numOfLayers-1], goal, func(num1,num2 float64)float64{return num1-num2}), weightedInputs[numOfLayers-1], func(num1,num2 float64)float64{return num1*num2})
+	var delta mu.Matrix
+	if numOfLayers - 2 < 0{
+		delta = inputs.Dot(err)
+	}else{
+		delta = activations[numOfLayers-2].Dot(err)
 	}
+	// Apply learning rate
+	delta.ApplyConst(func(num float64)float64{return num*net.lr})
+	net.layers[numOfLayers-1] = mu.ApplyFunc(net.layers[numOfLayers-1], delta, func(num1,num2 float64)float64{return num1-num2})
+
+	// Calculate errors and deltas for deep layers
+	for i := numOfLayers-2; i >= 0; i--{
+		weightedInputs[i].ApplyConst(divRelu)
+		err = mu.ApplyFunc(mu.ApplyFunc(err, net.layers[i+1], func(num1,num2 float64)float64{return num1*num2}), weightedInputs[i], func(num1,num2 float64)float64{return num1*num2})
+		if i == 0{
+			delta = inputs.Dot(err)
+		}else{
+			delta = activations[i-1].Dot(err)
+		}
+		// Apply learning rate
+		delta.ApplyConst(func(num float64)float64{return num*net.lr})
+		net.layers[i] = mu.ApplyFunc(net.layers[i], delta, func(num1,num2 float64)float64{return num1-num2})
+	}	
 }
 
+
+// Train a Network
+func train(network Network, inputs mu.Matrix, goal mu.Matrix){
+
+	for {
+		output, weightedInputs, activations := network.forwardProp(inputs)
+		err := meanSquaredError(output, goal)
+		fmt.Println("Error -", err)
+		fmt.Println("weightedInputs -", weightedInputs)
+		fmt.Println("activations -", activations)
+		network.backProp(weightedInputs, activations, inputs, goal)
+		if err.Mat[0][0] < .005{
+			break
+		}
+	}
+}
 
 // Testing and Running
 func main() {
@@ -113,15 +157,26 @@ func main() {
 		{1},
 		{0},
 	}
+	inputMat := mu.CreateMatrix(input)
 	goalMat := mu.CreateMatrix(goal)
 
+	learningRate := 0.5
 
-	network := createNetwork(2,3,1)
-	output := network.forwardProp(mu.CreateMatrix(input))
-	loss := meanSquaredError(mu.CopyMatrix(output), goalMat)
+	network := createNetwork(learningRate,2,1)
+	train(network, inputMat, goalMat)
 
-	fmt.Println("Network:", network)
-	fmt.Println("Output:", output)
-	fmt.Println("Loss:", loss)
 
+	test := [][]float64{
+		{0,0},
+	}
+	testGoal := [][]float64{
+		{0},
+	}
+	testMat := mu.CreateMatrix(test)
+	testGoalMat := mu.CreateMatrix(testGoal)
+
+	output, _, _ := network.forwardProp(testMat)
+
+	fmt.Println("Guess -", output)
+	fmt.Println("Error -", meanSquaredError(output, testGoalMat))
 }
