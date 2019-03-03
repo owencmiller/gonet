@@ -12,6 +12,7 @@ type Network struct{
 	bias[] mu.Matrix
 }
 
+// Apply bias to a weighted sum
 func addBias(weights mu.Matrix, bias mu.Matrix) mu.Matrix{
 	if weights.Cols != bias.Cols{
 		panic("Bias cannot be added")
@@ -27,23 +28,22 @@ func addBias(weights mu.Matrix, bias mu.Matrix) mu.Matrix{
 	}
 	return weights
 }
-// Forward propogate through the Network TODO make this a method for the Network (maybe)
-func forwardProp(input mu.Matrix, net Network) mu.Matrix{
+
+// Forward propogate through the Network 
+func (net Network) forwardProp(input mu.Matrix) (mu.Matrix, mu.Matrix, mu.Matrix){
+	weightedInput, activation := make([]mu.Matrix, len(net.layers))
 	for i, layer := range net.layers{
-		input = input.Multiply(layer)
+		input = input.Dot(layer)
+		weightedInput = append(weightedInput, mu.CopyMatrix(input))
 		input = addBias(input, net.bias[i])
-		input.ApplyConst(sigmoid)
+		activation = append(activation, mu.CopyMatrix(input))
+		input.ApplyConst(relu)
 	}
-	return input
+	return input, weightedInput, activation
 }
-
-// Back propogate through the network
-// TODO add backpropogation
-
 
 // MSE Loss function
 func meanSquaredError(guess mu.Matrix, goal mu.Matrix) mu.Matrix{
-
 	diff := mu.ApplyFunc(guess, goal, func(num1 float64, num2 float64)float64{
 		return (math.Pow(num1-num2,2))/2
 	})
@@ -54,6 +54,24 @@ func meanSquaredError(guess mu.Matrix, goal mu.Matrix) mu.Matrix{
 func sigmoid(num float64) float64{
 	return 1/(1+math.Exp(-num))
 }
+func divSigmoid(num float64) float64{
+	return sigmoid(num)*(1-sigmoid(num))
+}
+func relu(num float64) float64{
+	if num < 0{
+		return 0
+	}else{
+		return num
+	}
+}
+func divRelu(num float64) float64{
+	if num < 0{
+		return 0
+	}else{
+		return 1
+	}
+}
+
 
 // Create a NN from layerAmounts - including input and output amounts
 func createNetwork(layerAmounts ...int) Network{
@@ -75,6 +93,14 @@ func createNetwork(layerAmounts ...int) Network{
 	return Network{layers: layers, bias: biases}
 }
 
+// Backpropagation
+func (net Network) backProp(output mu.Matrix, goal mu.Matrix){
+	for i := len(net.layers)-1; i > 0; i--{
+		
+	}
+}
+
+
 // Testing and Running
 func main() {
 
@@ -91,7 +117,7 @@ func main() {
 
 
 	network := createNetwork(2,3,1)
-	output := forwardProp(mu.CreateMatrix(input), network)
+	output := network.forwardProp(mu.CreateMatrix(input))
 	loss := meanSquaredError(mu.CopyMatrix(output), goalMat)
 
 	fmt.Println("Network:", network)
