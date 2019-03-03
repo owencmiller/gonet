@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"time"
 	mu "github.com/owencmiller/gonet/matrixutil"
 )
 
@@ -136,10 +137,9 @@ func train(network Network, inputs mu.Matrix, goal mu.Matrix){
 		output, weightedInputs, activations := network.forwardProp(inputs)
 		err := meanSquaredError(output, goal)
 		fmt.Println("Error -", err)
-		fmt.Println("weightedInputs -", weightedInputs)
-		fmt.Println("activations -", activations)
 		network.backProp(weightedInputs, activations, inputs, goal)
-		if err.Mat[0][0] < .005{
+		time.Sleep(2 * time.Second)
+		if err.Mat[0][0] < .0005{
 			break
 		}
 	}
@@ -160,9 +160,9 @@ func main() {
 	inputMat := mu.CreateMatrix(input)
 	goalMat := mu.CreateMatrix(goal)
 
-	learningRate := 0.5
+	learningRate := 0.05
 
-	network := createNetwork(learningRate,2,1)
+	network := createNetwork(learningRate,2,3,1)
 	train(network, inputMat, goalMat)
 
 
@@ -177,6 +177,7 @@ func main() {
 
 	output, _, _ := network.forwardProp(testMat)
 
+	fmt.Println()
 	fmt.Println("Guess -", output)
 	fmt.Println("Error -", meanSquaredError(output, testGoalMat))
 }
