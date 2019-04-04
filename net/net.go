@@ -165,16 +165,6 @@ func main() {
 	network := createNetwork(learningRate,2,3,1)
 	train(network, inputMat, goalMat)
 
-
-	test := [][]float64{
-		{0,0},
-	}
-	testGoal := [][]float64{
-		{0},
-	}
-	testMat := mu.CreateMatrix(test)
-	testGoalMat := mu.CreateMatrix(testGoal)
-
 	output, _, _ := network.forwardProp(testMat)
 
 	fmt.Println()

@@ -1,6 +1,7 @@
 package matrixutil
 
 import (
+	"fmt"
 	"math/rand"
 )
 
@@ -11,9 +12,18 @@ type Matrix struct{
 	Mat[][] float64
 }
 
-// Method for multiplying two matrices
-func (Mat1 Matrix) Multiply(Mat2 Matrix) Matrix{
+func printMatrices(matrices... Matrix){
+	for i, matrix := range matrices{
+		fmt.Println("Matrix -", i)
+		fmt.Println(matrix)
+	}
+}
+
+
+// Method for dotting two matrices
+func (Mat1 Matrix) Dot(Mat2 Matrix) Matrix{
 	if Mat1.Cols != Mat2.Rows{
+		printMatrices(Mat1, Mat2)
 		panic("rix multiplication not possible")
 	}
 	ans := make([][]float64, Mat1.Rows)
@@ -31,6 +41,7 @@ func (Mat1 Matrix) Multiply(Mat2 Matrix) Matrix{
 // Apply a function to two matrices. (ex. subtraction, addition)
 func ApplyFunc(Mat1 Matrix, Mat2 Matrix, operation func(num1 float64,num2 float64) float64) Matrix{
 	if Mat1.Rows != Mat2.Rows || Mat1.Cols != Mat2.Cols{
+		printMatrices(Mat1, Mat2)
 		panic("Can't apply function to different sized rices")
 	}
 	for i, _ := range Mat1.Mat{
@@ -88,7 +99,7 @@ func GenerateMatrixRand(Rows, Cols int) Matrix{
 	for i, _ := range w{ 
 		w[i] = make([]float64, Cols)
 		for j, _ := range w[i]{
-			w[i][j] = rand.Float64()
+			w[i][j] = (rand.Float64()*2)-1
 		}
 	}
 	return Matrix{Rows: Rows, Cols: Cols, Mat: w}
