@@ -12,7 +12,6 @@ Creation of the network is as easy as
 ```
 network = createNetwork(lr float64, layerAmounts ...int)
 ``` 
-.
 ## Implementation
 This project is a fully modular deep neural network in Golang. 
 It contains a linear algrebra abstraction which allows for easy modification along with easy NN creation.
