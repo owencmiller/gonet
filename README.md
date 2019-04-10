@@ -1,5 +1,5 @@
 # gonet
-Neural Network in Go
+Deep Modular Neural Network in Go
 
 ## Setup
 ```
@@ -20,5 +20,5 @@ It contains a linear algrebra abstraction which allows for easy modification alo
 This project uses the equations found on https://sudeepraja.github.io/Neural/
 
 
-#### Contributors
+### Contributors
 Owen Miller
