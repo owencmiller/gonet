@@ -1,8 +1,25 @@
 # gonet
 Neural Network in Go
 
+## Setup
+```
+$ git clone git@github.com:owencmiller/gonet.git
+$ cd net
+$ go build
+$ net
+```
+Creation of the network is as easy as 
+```
+network = createNetwork(lr float64, layerAmounts ...int)
+``` 
+.
 ## Implementation
-This project contains a linear algrebra abstraction which allows for easy modification of the neural network.
+This project is a fully modular deep neural network in Golang. 
+It contains a linear algrebra abstraction which allows for easy modification along with easy NN creation.
+
+## Design
+This project uses the equations found on https://sudeepraja.github.io/Neural/
+
 
 #### Contributors
 Owen Miller
