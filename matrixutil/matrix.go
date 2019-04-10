@@ -20,6 +20,16 @@ func printMatrices(matrices... Matrix){
 }
 
 
+func (mat Matrix) Transpose() Matrix{
+	temp := make([][]float64, mat.Cols)
+	for i := 0; i < mat.Rows; i++{
+		for j := 0; j < mat.Cols; j++{
+			temp[j] = append(temp[j], mat.Mat[i][j])
+		}
+	}
+	return Matrix{Rows:mat.Cols, Cols:mat.Rows, Mat: temp}
+}
+
 // Method for dotting two matrices
 func (Mat1 Matrix) Dot(Mat2 Matrix) Matrix{
 	if Mat1.Cols != Mat2.Rows{
@@ -52,13 +62,22 @@ func ApplyFunc(Mat1 Matrix, Mat2 Matrix, operation func(num1 float64,num2 float6
 	return Mat1
 }
 
+func Multiply(num1, num2 float64) float64{
+	return num1 * num2
+}
+func Subtract(num1, num2 float64) float64{
+	return num1 - num2
+}
+
 // Method for applying an operation to all elements in a rix
-func (matrix Matrix) ApplyConst(operation func(num float64) float64){
+func ApplyConst(matrix Matrix, operation func(num float64) float64) Matrix{
+	temp := GenerateMatrixZeros(matrix.Rows, matrix.Cols)
 	for i := range matrix.Mat{
 		for j := range matrix.Mat[0]{
-			matrix.Mat[i][j] = operation(matrix.Mat[i][j])
+			temp.Mat[i][j] = operation(matrix.Mat[i][j])
 		}
 	}
+	return temp
 }
 
 // Create a matrix from 2d array/slice
