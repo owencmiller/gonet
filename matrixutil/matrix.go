@@ -23,7 +23,7 @@ func PrintMatrix(matrix Matrix){
 	for i := 0; i < matrix.Rows; i++{
 		fmt.Print("[")
 		for j := 0; j < matrix.Cols; j++{
-			fmt.Print(matrix.Mat[i][j], " ")
+			fmt.Printf("%1.3f ", matrix.Mat[i][j])
 		}
 		fmt.Println("]")
 	}
@@ -37,6 +37,16 @@ func (mat Matrix) Transpose() Matrix{
 		}
 	}
 	return Matrix{Rows:mat.Cols, Cols:mat.Rows, Mat: temp}
+}
+
+func AverageEntries(matrix Matrix) float64{
+	sum := 0.0
+	for i := 0; i < matrix.Rows; i++{
+		for j := 0; j < matrix.Cols; j++{
+			sum += matrix.Mat[i][j]
+		}
+	}
+	return (sum / ((float64) (matrix.Rows * matrix.Cols)))
 }
 
 // Method for dotting two matrices
