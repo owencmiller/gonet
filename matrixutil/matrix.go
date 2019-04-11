@@ -19,6 +19,15 @@ func printMatrices(matrices... Matrix){
 	}
 }
 
+func PrintMatrix(matrix Matrix){
+	for i := 0; i < matrix.Rows; i++{
+		fmt.Print("[")
+		for j := 0; j < matrix.Cols; j++{
+			fmt.Print(matrix.Mat[i][j], " ")
+		}
+		fmt.Println("]")
+	}
+}
 
 func (mat Matrix) Transpose() Matrix{
 	temp := make([][]float64, mat.Cols)
