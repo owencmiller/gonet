@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"time"
 	mu "github.com/owencmiller/gonet/matrixutil"
 )
 
@@ -83,7 +82,6 @@ func (net Network) backProp(weightedInputs []mu.Matrix, activ []mu.Matrix, input
 	delta := mu.ApplyFunc(diff, deriv, mu.Multiply)
 	errors[pos] = delta.Dot(activ[pos-1].Transpose())
 
-
 	for i := pos; i >= 1; i--{
 		diff = net.layers[i].Transpose().Dot(delta)
 		deriv = mu.ApplyConst(weightedInputs[i-1], divSigmoid)
@@ -94,7 +92,6 @@ func (net Network) backProp(weightedInputs []mu.Matrix, activ []mu.Matrix, input
 			errors[i-1] = delta.Dot(activ[i-2].Transpose())
 		}
 	}
-
 
 	for i := 0; i <= pos; i++{
 		net.layers[i] = mu.ApplyFunc(net.layers[i], errors[i], mu.Subtract)
@@ -108,10 +105,7 @@ func train(network Network, inputs mu.Matrix, goal mu.Matrix){
 	for {
 		output, weightedInputs, activations := network.forwardProp(inputs)
 		err := meanSquaredError(output, goal)
-		//fmt.Println("Error -", err)
 		network.backProp(weightedInputs, activations, inputs, goal)
-		//time.Sleep(2*time.Second)
-		time.Sleep(0)
 		if err.Mat[0][0] < .000005{
 			break
 		}
@@ -120,15 +114,15 @@ func train(network Network, inputs mu.Matrix, goal mu.Matrix){
 
 func run(){
 	input := [][]float64{
-		{1},
-		{1},
-		{1},
-		{1},
+		{1, 0, 0, 1},
+		{1, 0, 0, 1},
+		{1, 0, 1, 0},
+		{1, 0, 1, 0},
 	}
 
 	goal := [][]float64{
-		{0},
-		{0},
+		{0, 1, 1, 0},
+		{0, 1, 0, 1},
 	}
 	inputMat := mu.CreateMatrix(input)
 	goalMat := mu.CreateMatrix(goal)
@@ -138,12 +132,10 @@ func run(){
 	
 	train(network, inputMat, goalMat)
 
+	output, _, _ := network.forwardProp(inputMat)
 
-	output, _, act := network.forwardProp(inputMat)
-	
-	fmt.Println("output - ", output)
-	fmt.Println("activations - ", act)
-
+	fmt.Println("Goal - ", goalMat)
+	fmt.Println("Output - ", output)
 }
 
 func test(){

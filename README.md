@@ -2,11 +2,12 @@
 Deep Modular Neural Network in Go
 
 ## Setup
+Go into your /go directory and run the following commands
 ```
-$ git clone git@github.com:owencmiller/gonet.git
-$ cd net
+$ go get github.com/owencmiller/gonet.git
+$ cd gonet/net
 $ go build
-$ net
+$ ./net
 ```
 Creation of the network is as easy as 
 ```
@@ -18,7 +19,6 @@ It contains a linear algrebra abstraction which allows for easy modification alo
 
 ## Design
 This project uses the equations found on https://sudeepraja.github.io/Neural/
-
 
 ### Contributors
 Owen Miller
