@@ -2,7 +2,7 @@
 Deep Modular Neural Network in Go
 
 ## Setup
-Go into your /go directory and run the following commands
+cd into your /go directory and run the following commands
 ```
 $ go get github.com/owencmiller/gonet.git
 $ cd gonet/net
