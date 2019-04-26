@@ -4,10 +4,9 @@ Deep Modular Neural Network in Go
 ## Setup
 cd into your /go directory and run the following commands
 ```
-$ go get github.com/owencmiller/gonet.git
-$ cd gonet/net
+$ go get github.com/owencmiller/gonet
 $ go build
-$ ./net
+$ ./gonet
 ```
 Creation of the network is as easy as 
 ```
