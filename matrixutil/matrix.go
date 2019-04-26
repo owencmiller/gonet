@@ -12,6 +12,7 @@ type Matrix struct{
 	Mat[][] float64
 }
 
+// Print multiple Matricies
 func printMatrices(matrices... Matrix){
 	for i, matrix := range matrices{
 		fmt.Println("Matrix -", i)
@@ -19,6 +20,7 @@ func printMatrices(matrices... Matrix){
 	}
 }
 
+// Print a Matrix in a visually appealing way
 func PrintMatrix(matrix Matrix){
 	for i := 0; i < matrix.Rows; i++{
 		fmt.Print("[")
@@ -29,6 +31,7 @@ func PrintMatrix(matrix Matrix){
 	}
 }
 
+// Transpose a matrix
 func (mat Matrix) Transpose() Matrix{
 	temp := make([][]float64, mat.Cols)
 	for i := 0; i < mat.Rows; i++{
@@ -39,6 +42,7 @@ func (mat Matrix) Transpose() Matrix{
 	return Matrix{Rows:mat.Cols, Cols:mat.Rows, Mat: temp}
 }
 
+// Average all entries in a matrix
 func AverageEntries(matrix Matrix) float64{
 	sum := 0.0
 	for i := 0; i < matrix.Rows; i++{
