@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 	//"time"
-	mu "github.com/owencmiller/gonet/matrixutil"
+	mu "github.com/owencmiller/gonet/linlib"
 )
 
 // Neural Network layers of weights

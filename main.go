@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	//"time"
-	mu "github.com/owencmiller/gonet/matrixutil"
+	mu "github.com/owencmiller/gonet/linlib"
     net "github.com/owencmiller/gonet/net"
 )
 

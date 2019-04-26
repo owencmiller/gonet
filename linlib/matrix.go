@@ -1,4 +1,4 @@
-package matrixutil
+package linlib
 
 import (
 	"fmt"
