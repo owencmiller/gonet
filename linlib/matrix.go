@@ -9,7 +9,7 @@ import (
 type Matrix struct{
 	Rows int
 	Cols int
-	Mat[][] float64
+	Mat[][]float64
 }
 
 // Print multiple Matricies
@@ -84,7 +84,6 @@ func ApplyFunc(Mat1 Matrix, Mat2 Matrix, operation func(num1 float64,num2 float6
 	}
 	return Mat1
 }
-
 func Multiply(num1, num2 float64) float64{
 	return num1 * num2
 }
@@ -92,7 +91,7 @@ func Subtract(num1, num2 float64) float64{
 	return num1 - num2
 }
 
-// Method for applying an operation to all elements in a rix
+// Method for applying an operation to all elements in a matrix
 func ApplyConst(matrix Matrix, operation func(num float64) float64) Matrix{
 	temp := GenerateMatrixZeros(matrix.Rows, matrix.Cols)
 	for i := range matrix.Mat{
@@ -123,7 +122,7 @@ func CopyMatrix(mat Matrix) Matrix{
 	return CreateMatrix(temp)
 }
 
-// Generate a rix of zeros
+// Generate a matrix of zeros
 func GenerateMatrixZeros(Rows, Cols int) Matrix{
 	w := make([][]float64, Rows)
 	for i, _ := range w {
@@ -135,7 +134,7 @@ func GenerateMatrixZeros(Rows, Cols int) Matrix{
 	return Matrix{Rows: Rows, Cols: Cols, Mat: w}
 }
 
-// Generate a rix of random float64's
+// Generate a matrix of random float64's
 func GenerateMatrixRand(Rows, Cols int) Matrix{
 	w := make([][]float64, Rows)
 	for i, _ := range w{ 

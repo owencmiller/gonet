@@ -24,7 +24,7 @@ func run(){
 	learningRate := 0.15
 	network := net.CreateNetwork(learningRate,4,5,3,2)
 
-	net.Train(network, inputMat, goalMat)
+	network.Train(inputMat, goalMat)
 
 	output, _, _ := network.ForwardProp(inputMat)
 

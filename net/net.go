@@ -9,7 +9,7 @@ import (
 
 // Neural Network layers of weights
 type Network struct{
-	layers[] mu.Matrix
+	layers[]mu.Matrix
 	lr float64
 }
 
@@ -101,7 +101,7 @@ func (net Network) backProp(weightedInputs []mu.Matrix, activ []mu.Matrix, input
 
 
 // Train a Network
-func Train(network Network, inputs mu.Matrix, goal mu.Matrix){
+func (network Network) Train(inputs mu.Matrix, goal mu.Matrix){
 	counter := 0
 	for {
 		output, weightedInputs, activations := network.ForwardProp(inputs)
