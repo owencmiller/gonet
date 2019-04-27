@@ -1,3 +1,6 @@
+/**
+This is the main package for Gonet; a modular neural network framework written in pure Golang. 
+**/
 package main
 
 import (
