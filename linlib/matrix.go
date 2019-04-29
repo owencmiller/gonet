@@ -102,6 +102,11 @@ func ApplyConst(matrix Matrix, operation func(num float64) float64) Matrix{
 	return temp
 }
 
+// Multiply a matrix by a scalar
+func MultiplyConst(matrix Matrix, num float64) Matrix{
+    return ApplyConst(matrix, func(i float64)float64{ return i*num})
+}
+
 // Create a matrix from 2d array/slice
 func CreateMatrix(data [][]float64) Matrix{
 	Rows := len(data)

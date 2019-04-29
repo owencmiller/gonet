@@ -95,6 +95,7 @@ func (net Network) backProp(weightedInputs []mu.Matrix, activ []mu.Matrix, input
 	}
 
 	for i := 0; i <= pos; i++{
+        errors[i] = mu.MultiplyConst(errors[i], net.lr)
 		net.layers[i] = mu.ApplyFunc(net.layers[i], errors[i], mu.Subtract)
 	}
 }

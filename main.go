@@ -24,7 +24,7 @@ func run(){
 	inputMat := mu.CreateMatrix(input)
 	goalMat := mu.CreateMatrix(goal)
 
-	learningRate := 0.15
+	learningRate := 2.0
 	network := net.CreateNetwork(learningRate,4,5,3,2)
 
 	network.Train(inputMat, goalMat)
