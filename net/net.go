@@ -13,7 +13,7 @@ type Network struct {
 	lr     float64
 }
 
-// Forward propogate through the Network
+// Forward propagate through the Network
 func (net Network) ForwardProp(inputMain mu.Matrix) (mu.Matrix, []mu.Matrix, []mu.Matrix) {
 	weightedInput := make([]mu.Matrix, 0)
 	activation := make([]mu.Matrix, 0)
