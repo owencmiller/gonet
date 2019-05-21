@@ -5,7 +5,7 @@ package main
 
 import (
 	"fmt"
-	//"time"
+	"time"
 	mu "github.com/owencmiller/gonet/linlib"
     net "github.com/owencmiller/gonet/net"
 )
@@ -24,10 +24,13 @@ func run(){
 	inputMat := mu.CreateMatrix(input)
 	goalMat := mu.CreateMatrix(goal)
 
-	learningRate := 2.0
+	learningRate := 1.0
 	network := net.CreateNetwork(learningRate,4,5,3,2)
 
+    start := time.Now()
 	network.Train(inputMat, goalMat)
+    end := time.Since(start)
+
 
 	output, _, _ := network.ForwardProp(inputMat)
 
@@ -37,6 +40,7 @@ func run(){
 	mu.PrintMatrix(output)
 	fmt.Println("Error - ")
 	mu.PrintMatrix(net.MeanSquaredError(output, goalMat))
+    fmt.Printf("Time Elapsed - %s\n", end)
 }
 
 func main() {
