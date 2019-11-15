@@ -12,23 +12,25 @@ import (
 
 func run() {
 	input := [][]float64{
-		{1, 0, 0, 1},
-		{1, 0, 0, 1},
-		{1, 0, 1, 0},
-		{1, 0, 1, 0},
+		{1, 1},
+		{1, 0},
+		{0, 1},
+		{0 ,0},
 	}
 	goal := [][]float64{
-		{0, 1, 1, 0},
-		{0, 1, 0, 1},
+		{0},
+		{1},
+		{1},
+		{0},
 	}
 	inputMat := mu.CreateMatrix(input)
 	goalMat := mu.CreateMatrix(goal)
 
 	learningRate := 1.0
-	network := net.CreateNetwork(learningRate, 4, 5, 3, 2)
+	network := net.CreateNetwork(learningRate, 2, 3, 1)
 
 	start := time.Now()
-	network.Train(inputMat, goalMat)
+	network.Train(inputMat, goalMat, 500000)
 	end := time.Since(start)
 
 	output, _, _ := network.ForwardProp(inputMat)

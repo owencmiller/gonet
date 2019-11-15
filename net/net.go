@@ -17,14 +17,14 @@ type Network struct {
 func (net Network) ForwardProp(inputMain mu.Matrix) (mu.Matrix, []mu.Matrix, []mu.Matrix) {
 	weightedInput := make([]mu.Matrix, 0)
 	activation := make([]mu.Matrix, 0)
-	input := mu.CopyMatrix(inputMain)
+	input := mu.CopyMatrix(inputMain.Transpose())
 	for _, layer := range net.layers {
 		input = layer.Dot(input)
 		weightedInput = append(weightedInput, mu.CopyMatrix(input))
 		input = mu.ApplyConst(input, sigmoid)
 		activation = append(activation, mu.CopyMatrix(input))
 	}
-	return input, weightedInput, activation
+	return input.Transpose(), weightedInput, activation
 }
 
 // MSE Loss function
@@ -71,7 +71,8 @@ func CreateNetwork(lr float64, layerAmounts ...int) Network {
 }
 
 // Backpropagation
-func (net Network) backProp(weightedInputs []mu.Matrix, activ []mu.Matrix, inputs mu.Matrix, goal mu.Matrix) {
+func (net Network) backProp(weightedInputs []mu.Matrix, activ []mu.Matrix, inputs mu.Matrix, goalMain mu.Matrix) {
+	goal := goalMain.Transpose()
 	numOfLayers := len(net.layers)
 	pos := numOfLayers - 1
 	errors := make([]mu.Matrix, numOfLayers)
@@ -86,7 +87,7 @@ func (net Network) backProp(weightedInputs []mu.Matrix, activ []mu.Matrix, input
 		deriv = mu.ApplyConst(weightedInputs[i-1], divSigmoid)
 		delta = mu.ApplyFunc(diff, deriv, mu.Multiply)
 		if i == 1 {
-			errors[i-1] = delta.Dot(inputs.Transpose())
+			errors[i-1] = delta.Dot(inputs)
 		} else {
 			errors[i-1] = delta.Dot(activ[i-2].Transpose())
 		}
@@ -99,16 +100,16 @@ func (net Network) backProp(weightedInputs []mu.Matrix, activ []mu.Matrix, input
 }
 
 // Train a Network
-func (network Network) Train(inputs mu.Matrix, goal mu.Matrix) {
+func (network Network) Train(inputs mu.Matrix, goal mu.Matrix, iterations int) {
 	counter := 0
 	for {
 		output, weightedInputs, activations := network.ForwardProp(inputs)
 		errors := MeanSquaredError(output, goal)
 		network.backProp(weightedInputs, activations, inputs, goal)
-		if counter%10000 == 0 {
+		if counter%1000 == 0 {
 			fmt.Println("Error - ", mu.AverageEntries(errors))
 		}
-		if mu.AverageEntries(errors) < .0000005 {
+		if mu.AverageEntries(errors) < .0000005 || counter == iterations{
 			break
 		}
 		counter++

@@ -13,7 +13,7 @@ type Matrix struct {
 }
 
 // Print multiple Matricies
-func printMatrices(matrices ...Matrix) {
+func PrintMatrices(matrices ...Matrix) {
 	for i, matrix := range matrices {
 		fmt.Println("Matrix -", i)
 		fmt.Println(matrix)
@@ -56,7 +56,7 @@ func AverageEntries(matrix Matrix) float64 {
 // Method for dotting two matrices
 func (Mat1 Matrix) Dot(Mat2 Matrix) Matrix {
 	if Mat1.Cols != Mat2.Rows {
-		printMatrices(Mat1, Mat2)
+		PrintMatrices(Mat1, Mat2)
 		panic("rix multiplication not possible")
 	}
 	ans := make([][]float64, Mat1.Rows)
@@ -74,8 +74,8 @@ func (Mat1 Matrix) Dot(Mat2 Matrix) Matrix {
 // Apply a function to two matrices. (ex. subtraction, addition)
 func ApplyFunc(Mat1 Matrix, Mat2 Matrix, operation func(num1 float64, num2 float64) float64) Matrix {
 	if Mat1.Rows != Mat2.Rows || Mat1.Cols != Mat2.Cols {
-		printMatrices(Mat1, Mat2)
-		panic("Can't apply function to different sized rices")
+		fmt.Printf("Row1: %d, Row2: %d| Col1: %d, Col1: %d \n", Mat1.Rows, Mat2.Rows, Mat1.Cols, Mat2.Cols)
+		panic("Can't apply function to different sized sizes")
 	}
 	for i := range Mat1.Mat {
 		for j := range Mat1.Mat[i] {
