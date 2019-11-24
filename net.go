@@ -100,12 +100,12 @@ func (net Network) backProp(weightedInputs []mu.Matrix, activ []mu.Matrix, input
 }
 
 // Train a Network
-func (network Network) Train(inputs mu.Matrix, goal mu.Matrix, iterations int) {
+func (net Network) Train(inputs mu.Matrix, goal mu.Matrix, iterations int) {
 	counter := 0
 	for {
-		output, weightedInputs, activations := network.ForwardProp(inputs)
+		output, weightedInputs, activations := net.ForwardProp(inputs)
 		errors := MeanSquaredError(output, goal)
-		network.backProp(weightedInputs, activations, inputs, goal)
+		net.backProp(weightedInputs, activations, inputs, goal)
 		if counter%1000 == 0 {
 			fmt.Println("Error - ", mu.AverageEntries(errors))
 		}
