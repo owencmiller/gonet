@@ -1,4 +1,4 @@
-package net
+package gonet
 
 import (
 	"fmt"
@@ -13,28 +13,6 @@ type Network struct {
 	lr     float64
 }
 
-// Forward propagate through the Network
-func (net Network) ForwardProp(inputMain mu.Matrix) (mu.Matrix, []mu.Matrix, []mu.Matrix) {
-	weightedInput := make([]mu.Matrix, 0)
-	activation := make([]mu.Matrix, 0)
-	input := mu.CopyMatrix(inputMain.Transpose())
-	for _, layer := range net.layers {
-		input = layer.Dot(input)
-		weightedInput = append(weightedInput, mu.CopyMatrix(input))
-		input = mu.ApplyConst(input, sigmoid)
-		activation = append(activation, mu.CopyMatrix(input))
-	}
-	return input.Transpose(), weightedInput, activation
-}
-
-// MSE Loss function
-func MeanSquaredError(guess mu.Matrix, goal mu.Matrix) mu.Matrix {
-	diff := mu.ApplyFunc(guess, goal, func(num1 float64, num2 float64) float64 {
-		return (math.Pow(num1-num2, 2)) / 2
-	})
-	return diff
-}
-
 // Activation function
 func sigmoid(num float64) float64 {
 	return 1 / (1 + math.Exp(-num))
@@ -45,16 +23,22 @@ func divSigmoid(num float64) float64 {
 func relu(num float64) float64 {
 	if num < 0 {
 		return 0
-	} else {
-		return num
 	}
+	return num
 }
 func divRelu(num float64) float64 {
 	if num < 0 {
 		return 0
-	} else {
-		return 1
 	}
+	return 1
+}
+
+// MSE Loss function
+func MeanSquaredError(guess mu.Matrix, goal mu.Matrix) mu.Matrix {
+	diff := mu.ApplyFunc(guess, goal, func(num1 float64, num2 float64) float64 {
+		return (math.Pow(num1-num2, 2)) / 2
+	})
+	return diff
 }
 
 // Create a NN from layerAmounts - including input and output amounts
@@ -68,6 +52,20 @@ func CreateNetwork(lr float64, layerAmounts ...int) Network {
 	}
 
 	return Network{layers: layers, lr: lr}
+}
+
+// Forward propagate through the Network
+func (net Network) ForwardProp(inputMain mu.Matrix) (mu.Matrix, []mu.Matrix, []mu.Matrix) {
+	weightedInput := make([]mu.Matrix, 0)
+	activation := make([]mu.Matrix, 0)
+	input := mu.CopyMatrix(inputMain.Transpose())
+	for _, layer := range net.layers {
+		input = layer.Dot(input)
+		weightedInput = append(weightedInput, mu.CopyMatrix(input))
+		input = mu.ApplyConst(input, sigmoid)
+		activation = append(activation, mu.CopyMatrix(input))
+	}
+	return input.Transpose(), weightedInput, activation
 }
 
 // Backpropagation
